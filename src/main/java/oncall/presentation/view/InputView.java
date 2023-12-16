@@ -21,10 +21,12 @@ public class InputView {
         Printer.print(Ask.PERIOD);
         String periodInput = Reader.read().trim();
         validatePeriodInput(periodInput);
+
         String[] monthAndDay = periodInput.split(DEFAULT_SEPARATOR);
         int month = Integer.parseInt(monthAndDay[0].trim());
         String startDay = monthAndDay[1].trim();
         validateAvailablePeriod(month, startDay);
+
         return new WorkInfo.TargetPeriodInfo(month, startDay);
     }
 
@@ -35,7 +37,7 @@ public class InputView {
     }
 
     private void validateAvailablePeriod(int month, String startDay) {
-        if (month < 1 || month > 12) {
+        if (month < Standard.FIRST_MONTH_OF_YEAR || month > Standard.LAST_MONTH_OF_YEAR) {
             throw new GlobalException(GlobalError.UNAVAILABLE_INPUT);
         }
         if (!Standard.DAYS_OF_WEEK.contains(startDay)) {
@@ -54,8 +56,12 @@ public class InputView {
         Printer.print(Ask.HOLIDAYS_WORKERS);
         String workersInput = Reader.read().trim();
         validateWorkersInput(workersInput);
+
         List<String> names = splitNames(workersInput);
         validateWorkersDuplicate(names);
+        validateWorkerNameLength(names);
+        validateWorkerSize(names);
+
         return new WorkInfo.WorkersInfo(names);
     }
     private void validateWorkersInput(String workersInput) {
@@ -64,11 +70,24 @@ public class InputView {
         }
     }
 
-    private void validateWorkersDuplicate(List<String> workersName) {
-        long uniqueNameQuantity = workersName.stream()
+    private void validateWorkerSize(List<String> workerNames) {
+        if (workerNames.size() > Standard.MAXIMUM_SIZE_OF_WORKERS || workerNames.size() < Standard.MINIMUM_SIZE_OF_WORKERS) {
+            throw new GlobalException(GlobalError.UNAVAILABLE_INPUT);
+        }
+    }
+    private void validateWorkerNameLength(List<String> workerNames) {
+        for (String workerName : workerNames) {
+            if (workerName.length() > Standard.MINIMUM_LENGTH_OF_WORKER_NAME || workerName.isBlank()) {
+                throw new GlobalException(GlobalError.UNAVAILABLE_INPUT);
+            }
+        }
+    }
+
+    private void validateWorkersDuplicate(List<String> workersNames) {
+        long uniqueNameQuantity = workersNames.stream()
                 .distinct()
                 .count();
-        if (workersName.size() != uniqueNameQuantity) {
+        if (workersNames.size() != uniqueNameQuantity) {
             throw new GlobalException(GlobalError.UNAVAILABLE_INPUT);
         }
     }

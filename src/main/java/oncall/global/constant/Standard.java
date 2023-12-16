@@ -6,6 +6,15 @@ import java.util.Map;
 
 public abstract class Standard {
 
+    // 유효한 월 기준
+    public static final int FIRST_MONTH_OF_YEAR = 1;
+    public static final int LAST_MONTH_OF_YEAR = 12;
+
+    // 근무자 입력값 기준
+    public static final int MINIMUM_LENGTH_OF_WORKER_NAME = 5;
+    public static final int MINIMUM_SIZE_OF_WORKERS = 5;
+    public static final int MAXIMUM_SIZE_OF_WORKERS = 35;
+
     // 각 월별 총 일수
     public static final Map<Integer, Integer> TOTAL_DAYS_OF_MONTH = new HashMap<>();
     static {
